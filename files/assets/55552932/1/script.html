@@ -1,0 +1,94 @@
+var button = document.getElementsByClassName("booth-container");
+
+function backEvent(feature){
+	var bodyContent = document.getElementsByClassName("body-content");
+	for (let i = 0; i < bodyContent.length; i++) {
+		bodyContent[i].classList.remove('conten-show');
+	}
+    if(feature || feature != ''){
+        var agenda = document.getElementById(feature);
+        agenda.classList.toggle("conten-show");                                       
+    }
+}
+
+function backEventAgenda(){
+	var bodyContent = document.getElementsByClassName("body-content");
+	for (let i = 0; i < bodyContent.length; i++) {
+		bodyContent[i].classList.remove('conten-show');
+	}
+
+    
+}                                           
+                                           
+function btnEvent(event, id_booth, id_event){
+	var bodyContent = document.getElementsByClassName("body-content");
+	var thisEvent = document.getElementById(event);
+
+	thisEvent.classList.toggle("conten-show");
+    //console.log("Booth : "+id_booth+" Event"+id_event);                      
+    if(id_booth){
+        ApiBooth.getBooth(id_booth, (err, res) => {
+            if(res){
+                var _data = res.data.exhibitor_events[id_event];
+                console.log(_data.thumbnail_image+" Image L");
+                document.querySelector('#agenda-image').src = _data.thumbnail_image;  
+                document.querySelector('#agenda-konten').innerHTML = _data.event_description;
+
+                document.querySelector('#btn-zoom').onclick = function() {window.open(_data.zoom_url,'_blank');}; 
+                document.querySelector('#btn-youtube').onclick = function() {window.open(_data.youtube_url,'_blank');}; 
+            }
+        });
+    }   
+}
+
+function openNewWindow(url){
+    window.open('url','_blank');
+}
+
+function myFunction(element) {
+	var dropdowns = document.getElementsByClassName("dropdown-content");
+
+  // element.nextSibling is the carriage return… The dropdown menu is the next next.
+  var thisDropdown = element.nextSibling.nextSibling;
+  if (!thisDropdown.classList.contains('show')) {  // Added to hide dropdown if clicking on the one already open
+  	for (let i = 0; i < dropdowns.length; i++) {
+  		dropdowns[i].classList.remove('show');
+  	}
+  	for (let i = 0; i < button.length; i++) {
+  		button[i].style.display = 'none';
+  	}
+  }else{
+  	for (let i = 0; i < button.length; i++) {
+  		button[i].style.display = 'flex';
+  	}
+  }
+
+  var parent = element.parentNode;
+
+
+  parent.style.display = 'flex';
+  // Toggle the dropdown on the element clicked
+  thisDropdown.classList.toggle("show");
+
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+	if (event.target.matches('.booth-feature')) {
+		var dropdowns = document.getElementsByClassName("dropdown-content");
+		for (let i = 0; i < dropdowns.length; i++) {
+			var openDropdown = dropdowns[i];
+			if (openDropdown.classList.contains('show')) {
+				openDropdown.classList.remove('show');
+			}
+		}
+
+		var btn = document.getElementsByClassName("booth-container");
+		for (let i = 0; i < btn.length; i++) {
+			var openDropdown = btn[i];
+			if (openDropdown.style.display == 'none') {
+				openDropdown.style.display = 'flex';
+			}
+		}
+	}
+}
